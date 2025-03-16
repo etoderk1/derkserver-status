@@ -3,44 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Server Status</title>
+    <title>DerkStatus - Проверка статуса Minecraft серверов</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        pre {
-            background: #f8f9fa;
-            padding: 10px;
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #000000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745 !important;
+        }
+        .container {
+            flex: 1;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #28a745;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .lead {
+            color: #6c757d;
+            text-align: center;
+        }
+        .form-control {
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            color: #ffffff; /* Белый цвет текста */
             border-radius: 5px;
         }
-        .table {
+        .form-control:focus {
+            background-color: #2d2d2d;
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+        .alert {
+            border-radius: 5px;
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            color: #ffffff;
+        }
+        pre {
+            background: #2d2d2d;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            color: #ffffff;
+        }
+        .server-panel {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
             margin-top: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            width: 100%;
+        }
+        .server-panel img {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+        .server-panel .server-info {
+            flex: 1;
+        }
+        .server-panel .server-info h5 {
+            margin: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .server-panel .server-info p {
+            margin: 5px 0;
+            color: #6c757d;
+        }
+        .server-panel .server-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .server-panel .server-actions .btn {
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .server-panel .server-actions .btn-view {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .footer {
+            text-align: center;
+            color: #6c757d;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            margin-top: auto;
+        }
+        .footer a {
+            color: #28a745;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Стили для модального окна */
+        .modal-content {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border-radius: 10px;
+        }
+        .modal-header {
+            border-bottom: 1px solid #444;
+            display: flex;
+            align-items: center;
+        }
+        .modal-header img {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            margin-right: 15px;
+        }
+        .modal-header h5 {
+            margin: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-body p {
+            margin: 10px 0;
+            color: #6c757d;
+        }
+        .modal-body .btn-contact {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .modal-body .btn-contact:hover {
+            background-color: #218838;
+        }
+        .modal-body .btn-contact.discord {
+            background-color: #7289da;
+        }
+        .modal-body .btn-contact.telegram {
+            background-color: #0088cc;
+        }
+        .modal-body .btn-contact.shop {
+            background-color: #ffc107;
+            color: #000;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand" href="#">Minecraft Server Status</a>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand animate__animated animate__fadeInLeft" href="#">DerkStatus</a>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1>Minecraft Server Status</h1>
-        <p class="lead">Get information about Minecraft servers quickly</p>
+    <div class="container animate__animated animate__fadeInUp">
+        <h1>DerkStatus</h1>
+        <p class="lead">Проверка статуса Minecraft серверов быстро и просто</p>
 
         <form id="serverForm">
             <div class="input-group mb-3">
-                <input type="text" id="serverAddress" class="form-control" placeholder="Enter server address (e.g., hypixel.net)" required>
-                <button type="submit" class="btn btn-primary">Check Status</button>
+                <input type="text" id="serverAddress" class="form-control" placeholder="Введите адрес сервера (например, hypixel.net)" required>
+                <button type="submit" class="btn btn-primary">Проверить статус</button>
             </div>
             <div class="form-check">
                 <input type="checkbox" id="bedrockCheckbox" class="form-check-input">
-                <label for="bedrockCheckbox" class="form-check-label">Bedrock server?</label>
+                <label for="bedrockCheckbox" class="form-check-label">Bedrock сервер?</label>
             </div>
         </form>
 
         <div id="serverInfo" class="mt-4"></div>
+
+        <!-- Панелька с информацией о сервере -->
+        <div class="server-panel animate__animated animate__fadeInUp" id="serverPanel">
+            <img src="https://i.postimg.cc/hvYSJ8KZ/ava-1.jpg" alt="Аватарка сервера">
+            <div class="server-info">
+                <h5 id="serverName">play.spinbox.fun</h5>
+                <p id="serverOnline">Онлайн: Загрузка...</p>
+            </div>
+            <div class="server-actions">
+                <button class="btn btn-view" data-bs-toggle="modal" data-bs-target="#serverModal">Просмотр</button>
+            </div>
+        </div>
     </div>
 
+<!-- Модальное окно -->
+<div class="modal fade" id="serverModal" tabindex="-1" aria-labelledby="serverModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="https://i.postimg.cc/hvYSJ8KZ/ava-1.jpg" alt="Аватарка сервера">
+                <h5 class="modal-title" id="serverModalLabel">play.spinbox.fun<br><span id="modalOnline">Онлайн: Загрузка...</span></h5>
+            </div>
+            <div class="modal-body">
+                <p>Это BoxPvP сервер с уникальными режимами и активным сообществом.</p>
+                <button class="btn-contact discord animate__animated animate__fadeInLeft" onclick="window.open('https://discord.gg/ukZ8HghWmE', '_blank')">Discord</button>
+                <button class="btn-contact telegram animate__animated animate__fadeInRight" onclick="window.open('https://t.me/spinboxpvp', '_blank')">Telegram</button>
+                <button class="btn-contact shop animate__animated animate__fadeInLeft" onclick="window.open('https://shop.spinbox.fun/', '_blank')">Магазин</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Футер -->
+    <div class="footer animate__animated animate__fadeInUp">
+        <p>© 2025 DerkStatus. Все права защищены.</p>
+        <p>Сделано с ❤️ для Minecraft сообщества.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
