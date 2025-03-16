@@ -27,32 +27,6 @@ document.getElementById('serverForm').addEventListener('submit', async (e) => {
                 modsList = data.mods.names.map(mod => `<li>${mod}</li>`).join('');
             }
 
-            // DNS-информация (пример для play.spinbox.fun)
-            const dnsInfo = `
-                <h5 class="mt-4">DNS Information</h5>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Hostname</th>
-                            <th>Type</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>_minecraft._tcp.play.spinbox.fun</td>
-                            <td>SRV</td>
-                            <td>0 5 25565 derk.spinbox.fun</td>
-                        </tr>
-                        <tr>
-                            <td>derk.spinbox.fun</td>
-                            <td>A</td>
-                            <td>46.174.53.221</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
-
             serverInfo.innerHTML = `
                 <div class="alert alert-success">
                     <h4>Server: ${data.hostname}</h4>
@@ -66,7 +40,6 @@ document.getElementById('serverForm').addEventListener('submit', async (e) => {
                     ${modsList ? `<p>Mods:</p><ul>${modsList}</ul>` : ''}
                     <p>IP: ${data.ip}</p>
                     <p>Port: ${data.port}</p>
-                    ${dnsInfo}
                 </div>
             `;
         } else {
